@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time IoT Data</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #data { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Real-Time IoT Data</h1>
+    <div id="data"></div>
+
+    <script>
+        const dataContainer = document.getElementById("data");
+
+        // Connect to WebSocket server
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/data/');
+
+        socket.onmessage = function(event) {
+            const message = JSON.parse(event.data);
+            const timestamp = message.timestamp;
+            const deviceData = message.data;
+            const newMessage = `${timestamp}: ${deviceData}`;
+
+            // Display received data on the page
+            const dataElement = document.createElement('div');
+            dataElement.textContent = newMessage;
+            dataContainer.appendChild(dataElement);
+        };
+
+        socket.onclose = function(event) {
+            console.log('WebSocket connection closed');
+        };
+    </script>
+</body>
+</html>
